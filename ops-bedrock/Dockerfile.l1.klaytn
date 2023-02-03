@@ -1,0 +1,6 @@
+FROM ubuntu:20.04
+
+VOLUME ["/devnet"]
+
+ENTRYPOINT ["/devnet/bin/kscnd", "start"]
+

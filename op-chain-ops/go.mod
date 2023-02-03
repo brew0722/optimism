@@ -3,12 +3,14 @@ module github.com/ethereum-optimism/optimism/op-chain-ops
 go 1.18
 
 require (
+	github.com/cespare/cp v0.1.0
 	github.com/ethereum-optimism/optimism/op-bindings v0.10.11
 	github.com/ethereum-optimism/optimism/op-node v0.10.1
 	github.com/ethereum/go-ethereum v1.10.26
 	github.com/holiman/uint256 v1.2.0
 	github.com/mattn/go-isatty v0.0.16
 	github.com/stretchr/testify v1.8.1
+	github.com/tidwall/sjson v1.2.5
 	github.com/urfave/cli v1.22.9
 	github.com/urfave/cli/v2 v2.17.2-0.20221006022127-8f469abc00aa
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
@@ -51,6 +53,9 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/status-im/keycard-go v0.0.0-20190316090335-8537d3370df4 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20220614013038-64ee5596c38a // indirect
+	github.com/tidwall/gjson v1.14.4 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.10 // indirect
 	github.com/tklauser/numcpus v0.5.0 // indirect
 	github.com/tyler-smith/go-bip39 v1.1.0 // indirect

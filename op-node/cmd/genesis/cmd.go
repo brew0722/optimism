@@ -7,6 +7,7 @@ import (
 	"math/big"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/urfave/cli"
 
@@ -54,13 +55,24 @@ var Subcommands = cli.Commands{
 			if err := config.Check(); err != nil {
 				return err
 			}
-
-			l1Genesis, err := genesis.BuildL1DeveloperGenesis(config)
-			if err != nil {
-				return err
+			var l1StartBlock *types.Block
+			if strings.ToLower(config.L1ChainType) != "klaytn" {
+				l1Genesis, err := genesis.BuildL1DeveloperGenesis(config)
+				if err != nil {
+					return err
+				}
+				l1StartBlock = l1Genesis.ToBlock()
+				if err := writeGenesisFile(ctx.String("outfile.l1"), l1Genesis); err != nil {
+					return err
+				}
+			} else {
+				l1OutputPath := filepath.Dir(ctx.String("outfile.l1"))
+				l1StartBlock, err = genesis.BuildKlaytnL1DevnetEnvironment(l1OutputPath, config)
+				if err != nil {
+					return err
+				}
 			}
 
-			l1StartBlock := l1Genesis.ToBlock()
 			l2Genesis, err := genesis.BuildL2DeveloperGenesis(config, l1StartBlock)
 			if err != nil {
 				return err
@@ -69,10 +81,6 @@ var Subcommands = cli.Commands{
 			l2GenesisBlock := l2Genesis.ToBlock()
 			rollupConfig, err := config.RollupConfig(l1StartBlock, l2GenesisBlock.Hash(), l2GenesisBlock.Number().Uint64())
 			if err != nil {
-				return err
-			}
-
-			if err := writeGenesisFile(ctx.String("outfile.l1"), l1Genesis); err != nil {
 				return err
 			}
 			if err := writeGenesisFile(ctx.String("outfile.l2"), l2Genesis); err != nil {

@@ -26,6 +26,7 @@ var ErrInvalidDeployConfig = errors.New("invalid deploy config")
 
 // DeployConfig represents the deployment configuration for Optimism
 type DeployConfig struct {
+	L1ChainType        string                           `json:"l1ChainType"`
 	L1StartingBlockTag *MarshalableRPCBlockNumberOrHash `json:"l1StartingBlockTag"`
 	L1ChainID          uint64                           `json:"l1ChainID"`
 	L2ChainID          uint64                           `json:"l2ChainID"`

@@ -14,13 +14,22 @@ services:
   l1:
     build:
       context: .
-      dockerfile: Dockerfile.l1
+      dockerfile: Dockerfile.l1.klaytn
     ports:
       - "8545:8545"
     volumes:
-      - "l1_data:/db"
-      - "${PWD}/../.devnet/genesis-l1.json:/genesis.json"
-      - "${PWD}/test-jwt-secret.txt:/config/test-jwt-secret.txt"
+      - "${PWD}/../.devnet/:/devnet"
+
+  # l1:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.l1
+  #   ports:
+  #     - "8545:8545"
+  #   volumes:
+  #     - "l1_data:/db"
+  #     - "${PWD}/../.devnet/genesis-l1.json:/genesis.json"
+  #     - "${PWD}/test-jwt-secret.txt:/config/test-jwt-secret.txt"
 
   l2:
     build:

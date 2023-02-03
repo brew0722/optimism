@@ -1,4 +1,5 @@
 {
+  "l1ChainType": "Klaytn",
   "l1ChainID": 900,
   "l2ChainID": 901,
   "l2BlockTime": 2,

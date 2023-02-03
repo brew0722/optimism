@@ -14,6 +14,7 @@ import (
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/params"
 )
 
@@ -38,7 +39,7 @@ type Deployment struct {
 	Address  common.Address
 }
 
-type Deployer func(*backends.SimulatedBackend, *bind.TransactOpts, Constructor) (*types.Transaction, error)
+type Deployer func(bind.ContractBackend, *bind.TransactOpts, Constructor) (*types.Transaction, error)
 
 func NewBackend() *backends.SimulatedBackend {
 	return NewBackendWithGenesisTimestamp(0)
@@ -120,6 +121,48 @@ func Deploy(backend *backends.SimulatedBackend, constructors []Constructor, cb D
 			return nil, fmt.Errorf("no address for %s", deployment.Name)
 		}
 		code, err := backend.CodeAt(context.Background(), addr, nil)
+		if len(code) == 0 {
+			return nil, fmt.Errorf("no code found for %s", deployment.Name)
+		}
+		if err != nil {
+			return nil, fmt.Errorf("cannot fetch code for %s", deployment.Name)
+		}
+		results[i] = Deployment{
+			Name:     deployment.Name,
+			Bytecode: code,
+			Address:  addr,
+		}
+	}
+
+	return results, nil
+}
+
+func DeployWithClient(client *ethclient.Client, constructors []Constructor, cb Deployer) ([]Deployment, error) {
+	results := make([]Deployment, len(constructors))
+
+	opts, err := bind.NewKeyedTransactorWithChainID(TestKey, ChainID)
+	if err != nil {
+		return nil, err
+	}
+
+	opts.GasLimit = 15_000_000
+
+	ctx := context.Background()
+	for i, deployment := range constructors {
+		tx, err := cb(client, opts, deployment)
+		if err != nil {
+			return nil, err
+		}
+
+		addr, err := bind.WaitDeployed(ctx, client, tx)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", deployment.Name, err)
+		}
+
+		if addr == (common.Address{}) {
+			return nil, fmt.Errorf("no address for %s", deployment.Name)
+		}
+		code, err := client.CodeAt(context.Background(), addr, nil)
 		if len(code) == 0 {
 			return nil, fmt.Errorf("no code found for %s", deployment.Name)
 		}

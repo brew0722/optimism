@@ -317,7 +317,7 @@ func deployL1Contracts(config *DeployConfig, backend *backends.SimulatedBackend)
 	return deployer.Deploy(backend, constructors, l1Deployer)
 }
 
-func l1Deployer(backend *backends.SimulatedBackend, opts *bind.TransactOpts, deployment deployer.Constructor) (*types.Transaction, error) {
+func l1Deployer(backend bind.ContractBackend, opts *bind.TransactOpts, deployment deployer.Constructor) (*types.Transaction, error) {
 	var tx *types.Transaction
 	var err error
 
@@ -407,7 +407,7 @@ func l1Deployer(backend *backends.SimulatedBackend, opts *bind.TransactOpts, dep
 	return tx, err
 }
 
-func upgradeProxy(backend *backends.SimulatedBackend, opts *bind.TransactOpts, proxyAddr common.Address, implAddr common.Address, callData []byte) (*types.Transaction, error) {
+func upgradeProxy(backend bind.ContractBackend, opts *bind.TransactOpts, proxyAddr common.Address, implAddr common.Address, callData []byte) (*types.Transaction, error) {
 	var tx *types.Transaction
 	proxy, err := bindings.NewProxy(proxyAddr, backend)
 	if err != nil {

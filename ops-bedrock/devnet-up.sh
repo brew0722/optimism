@@ -33,6 +33,7 @@ L1_URL="http://localhost:8545"
 L2_URL="http://localhost:9545"
 
 OP_NODE="$PWD/op-node"
+KLAYTN_TEMPLATE="$PWD/packages/klaytn_template"
 CONTRACTS_BEDROCK="$PWD/packages/contracts-bedrock"
 NETWORK=devnetL1
 DEVNET="$PWD/.devnet"
@@ -66,6 +67,9 @@ if [ ! -f "$DEVNET/done" ]; then
 
   TIMESTAMP=$(date +%s | xargs printf '0x%x')
   cat "$CONTRACTS_BEDROCK/deploy-config/devnetL1.json" | jq -r ".l1GenesisBlockTimestamp = \"$TIMESTAMP\"" > /tmp/bedrock-devnet-deploy-config.json
+
+  cp -r "$KLAYTN_TEMPLATE/bin" "$DEVNET"
+  cp -r "$KLAYTN_TEMPLATE/conf" "$DEVNET"
 
   (
     cd "$OP_NODE"
